@@ -1,3 +1,46 @@
+docker run -d \
+  --name postgres-product-db \
+  -e POSTGRES_USER=admin \
+  -e POSTGRES_PASSWORD=123456 \
+  -e POSTGRES_DB=products \
+  -p 5432:5432 \
+  -v postgres-data:/var/lib/postgresql/data \
+  postgres
+
+
+
+docker run -d \
+  --name my-postgres \
+  -e POSTGRES_USER=admin \
+  -e POSTGRES_PASSWORD=secretpass123 \
+  -e POSTGRES_DB=testdb \
+  -p 5433:5432 \
+  postgres
+
+
+Then connect with: 
+
+psql -h localhost -p 5433 -U admin -d products
+
+pnpm prisma init --datasource-provider postgresql--output ../generated/prisma
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Turborepo starter
 
 This Turborepo starter is maintained by the Turborepo core team.
