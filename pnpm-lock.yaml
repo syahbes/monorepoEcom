@@ -347,6 +347,10 @@ importers:
         version: 6.16.3(typescript@5.9.3)
 
   packages/types:
+    dependencies:
+      '@repo/product-db':
+        specifier: workspace:*
+        version: link:../product-db
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*

@@ -6,6 +6,9 @@
   "scripts": {
     "check-types": "tsx --noEmit"
   },
+  "dependencies": {
+    "@repo/product-db": "workspace:*"
+  },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^24.7.0"
@@ -17,4 +20,3 @@
     }
   }
 }
-
