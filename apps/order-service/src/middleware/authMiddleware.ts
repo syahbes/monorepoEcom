@@ -22,15 +22,9 @@ export const shouldBeAdmin = async (request: FastifyRequest, reply: FastifyReply
   if (!auth.userId) {
     return reply.status(401).send({ message: 'You are not logged in!' });
   }
-
-  const claims = auth.sessionClaims as CustomJwtSessionClaims
   
+  const claims = auth.sessionClaims as CustomJwtSessionClaims
   if (claims.metadata?.role !== 'admin') {
-    console.log(claims)
-    console.log(claims.metadata)
-    console.log('#####')
-    console.log(auth)
-    console.log('@@@')
     return reply.status(403).send({ message: 'Unauthorized!' });
   }
   request.userId = auth.userId;

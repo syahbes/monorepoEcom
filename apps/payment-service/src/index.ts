@@ -22,6 +22,8 @@ app.get('/test', shouldBeUser, (c) => {
   });
 });
 
+/*
+## just for testing , we will use Kafaka ##
 app.post('/create-stripe-product', async (c) => {
   const res = await stripe.products.create({
     id: '123',
@@ -40,7 +42,7 @@ app.get('/stripe-product-list', async (c) => {
   });
   return c.json(res);
 });
-
+*/
 const start = async () => {
   try {
     serve(
