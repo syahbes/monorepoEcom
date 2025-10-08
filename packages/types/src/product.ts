@@ -1,6 +1,8 @@
-import type { Product, Categoty} from "@repo/product-db"
+import type { Product, Category} from "@repo/product-db"
 
 export type ProductType = Product
+
+export type ProductsType = ProductType[]
 
 export type StripeProductType = {
   id: string;
@@ -8,4 +10,4 @@ export type StripeProductType = {
   price: number;
 };
 
-export type Category = Categoty
+export type CategoryType = Category

@@ -1,3 +1,10 @@
+DOCKER:
+
+docker start postgres-product-db
+
+
+USE THIS:
+
 docker run -d \
   --name postgres-product-db \
   -e POSTGRES_USER=admin \
@@ -8,7 +15,7 @@ docker run -d \
   postgres
 
 
-
+EXAMPLE ONLY
 docker run -d \
   --name my-postgres \
   -e POSTGRES_USER=admin \

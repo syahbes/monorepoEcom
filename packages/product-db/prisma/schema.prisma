@@ -20,10 +20,10 @@ model Product {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   categorySlug     String
-  category         Categoty @relation(fields: [categorySlug], references: [slug])
+  category         Category @relation(fields: [categorySlug], references: [slug])
 }
 
-model Categoty {
+model Category {
   id       Int       @id @default(autoincrement())
   name     String
   slug     String    @unique
