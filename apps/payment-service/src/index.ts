@@ -1,11 +1,12 @@
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 import { clerkMiddleware } from '@hono/clerk-auth';
-import { shouldBeUser } from './middleware/authMiddleware.js';
-import stripe from './utils/stripe.js';
+import sessionRoute from './routes/session.route.js';
+import { cors } from 'hono/cors';
 
 const app = new Hono();
 app.use('*', clerkMiddleware());
+app.use('*', cors({ origin: ['http://localhost:3002'] }));
 
 app.get('/health', (c) => {
   return c.json({
@@ -15,12 +16,7 @@ app.get('/health', (c) => {
   });
 });
 
-app.get('/test', shouldBeUser, (c) => {
-  return c.json({
-    message: 'Payment service is Authenticated!',
-    userId: c.get('userId'),
-  });
-});
+app.route('/sessions', sessionRoute);
 
 /*
 ## just for testing , we will use Kafaka ##
