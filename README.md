@@ -56,6 +56,8 @@ pnpm prisma studio
 In the `kafka` directory:
 ```bash
 docker compose up
+or
+docker compose up -d
 ```
 
 This starts Kafka brokers and Kafka UI.
