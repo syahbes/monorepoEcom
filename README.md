@@ -62,12 +62,14 @@ docker compose up -d
 
 This starts Kafka brokers and Kafka UI.
 
-### 4. Stripe Webhooks (Optional)
+### 4. Stripe Webhooks
 
 Start ngrok tunnel:
 ```bash
 ngrok http 8002
 ```
+and check the url in the ngrok output
+https://dashboard.stripe.com/acct_1SFpkEAcdNBVbpxW/test/workbench/webhooks/we_1SIZNHAcdNBVbpxWuJYd22Q5/events
 
 ### 5. Run Applications
 
