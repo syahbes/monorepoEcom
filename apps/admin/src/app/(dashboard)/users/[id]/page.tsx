@@ -1,27 +1,40 @@
-import CardList from "@/components/CardList";
-import { Badge } from "@/components/ui/badge";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import { Progress } from "@/components/ui/progress";
-import { BadgeCheck, Candy, Citrus, Shield } from "lucide-react";
-import { Sheet, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import EditUser from "@/components/EditUser";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import AppLineChart from "@/components/AppLineChart";
+import CardList from '@/components/CardList';
+import { Badge } from '@/components/ui/badge';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { Progress } from '@/components/ui/progress';
+import { BadgeCheck, Candy, Citrus, Shield } from 'lucide-react';
+import { Sheet, SheetTrigger } from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
+import EditUser from '@/components/EditUser';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import AppLineChart from '@/components/AppLineChart';
+import { auth, User } from '@clerk/nextjs/server';
 
-const SingleUserPage = () => {
+const getData = async (id: string): Promise<User | null> => {
+  const { getToken } = await auth();
+  const token = await getToken();
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_AUTH_SERVICE_URL}/users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+};
+const SingleUserPage = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = await params;
+  const data = await getData(id);
+
+  if (!data) {
+    return <div>User not found!</div>;
+  }
+
   return (
     <div className="">
       <Breadcrumb>
@@ -35,7 +48,7 @@ const SingleUserPage = () => {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>John Doe</BreadcrumbPage>
+            <BreadcrumbPage>{data?.firstName + ' ' + data?.lastName || data?.username || '-'}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -49,59 +62,38 @@ const SingleUserPage = () => {
             <div className="flex gap-4 mt-4">
               <HoverCard>
                 <HoverCardTrigger>
-                  <BadgeCheck
-                    size={36}
-                    className="rounded-full bg-blue-500/30 border-1 border-blue-500/50 p-2"
-                  />
+                  <BadgeCheck size={36} className="rounded-full bg-blue-500/30 border-1 border-blue-500/50 p-2" />
                 </HoverCardTrigger>
                 <HoverCardContent>
                   <h1 className="font-bold mb-2">Verified User</h1>
-                  <p className="text-sm text-muted-foreground">
-                    This user has been verified by the admin.
-                  </p>
+                  <p className="text-sm text-muted-foreground">This user has been verified by the admin.</p>
                 </HoverCardContent>
               </HoverCard>
               <HoverCard>
                 <HoverCardTrigger>
-                  <Shield
-                    size={36}
-                    className="rounded-full bg-green-800/30 border-1 border-green-800/50 p-2"
-                  />
+                  <Shield size={36} className="rounded-full bg-green-800/30 border-1 border-green-800/50 p-2" />
                 </HoverCardTrigger>
                 <HoverCardContent>
                   <h1 className="font-bold mb-2">Admin</h1>
-                  <p className="text-sm text-muted-foreground">
-                    Admin users have access to all features and can manage
-                    users.
-                  </p>
+                  <p className="text-sm text-muted-foreground">Admin users have access to all features and can manage users.</p>
                 </HoverCardContent>
               </HoverCard>
               <HoverCard>
                 <HoverCardTrigger>
-                  <Candy
-                    size={36}
-                    className="rounded-full bg-yellow-500/30 border-1 border-yellow-500/50 p-2"
-                  />
+                  <Candy size={36} className="rounded-full bg-yellow-500/30 border-1 border-yellow-500/50 p-2" />
                 </HoverCardTrigger>
                 <HoverCardContent>
                   <h1 className="font-bold mb-2">Awarded</h1>
-                  <p className="text-sm text-muted-foreground">
-                    This user has been awarded for their contributions.
-                  </p>
+                  <p className="text-sm text-muted-foreground">This user has been awarded for their contributions.</p>
                 </HoverCardContent>
               </HoverCard>
               <HoverCard>
                 <HoverCardTrigger>
-                  <Citrus
-                    size={36}
-                    className="rounded-full bg-orange-500/30 border-1 border-orange-500/50 p-2"
-                  />
+                  <Citrus size={36} className="rounded-full bg-orange-500/30 border-1 border-orange-500/50 p-2" />
                 </HoverCardTrigger>
                 <HoverCardContent>
                   <h1 className="font-bold mb-2">Popular</h1>
-                  <p className="text-sm text-muted-foreground">
-                    This user has been popular in the community.
-                  </p>
+                  <p className="text-sm text-muted-foreground">This user has been popular in the community.</p>
                 </HoverCardContent>
               </HoverCard>
             </div>
@@ -110,16 +102,14 @@ const SingleUserPage = () => {
           <div className="bg-primary-foreground p-4 rounded-lg space-y-2">
             <div className="flex items-center gap-2">
               <Avatar className="size-12">
-                <AvatarImage src="https://avatars.githubusercontent.com/u/1486366" />
-                <AvatarFallback>JD</AvatarFallback>
+                <AvatarImage src={data?.imageUrl} />
+                <AvatarFallback>{data?.firstName?.charAt(0) || data?.username?.charAt(0) || '-'}</AvatarFallback>
               </Avatar>
-              <h1 className="text-xl font-semibold">John Doe</h1>
+              <h1 className="text-xl font-semibold">{data?.firstName + ' ' + data?.lastName || data?.username || '-'}</h1>
             </div>
             <p className="text-sm text-muted-foreground">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel
-              voluptas distinctio ab ipsa commodi fugiat labore quos veritatis
-              cum corrupti sed repudiandae ipsum, harum recusandae ratione ipsam
-              in, quis quia.
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel voluptas distinctio ab ipsa commodi fugiat labore quos veritatis cum
+              corrupti sed repudiandae ipsum, harum recusandae ratione ipsam in, quis quia.
             </p>
           </div>
           {/* INFORMATION CONTAINER */}
@@ -135,40 +125,41 @@ const SingleUserPage = () => {
             </div>
             <div className="space-y-4 mt-4">
               <div className="flex flex-col gap-2 mb-8">
-                <p className="text-sm text-muted-foreground">
-                  Profile completion
-                </p>
+                <p className="text-sm text-muted-foreground">Profile completion</p>
                 <Progress value={66} />
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-bold">Full name:</span>
-                <span>John Doe</span>
+                <span>
+{data?.firstName + ' ' + data?.lastName || data?.username || '-'}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-bold">Email:</span>
-                <span>john.doe@gmail.com</span>
+                <span>{data?.emailAddresses[0]?.emailAddress || "-"}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-bold">Phone:</span>
-                <span>+1 234 5678</span>
+                <span>
+                {data?.phoneNumbers[0]?.phoneNumber || "-"}
+                </span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="font-bold">Address:</span>
-                <span>123 Main St</span>
+                <span className="font-bold">Role</span>
+                <span>
+                {String(data?.publicMetadata?.role) || "user"}
+                </span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="font-bold">City:</span>
-                <span>New York</span>
+                <span className="font-bold">Status</span>
+                <span>{data?.banned ? "banned" : "active"}</span>
               </div>
             </div>
-            <p className="text-sm text-muted-foreground mt-4">
-              Joined on 2025.01.01
-            </p>
+            <p className="text-sm text-muted-foreground mt-4">Joined on {new Date(data?.createdAt).toLocaleString("en-US")}</p>
           </div>
         </div>
         {/* RIGHT */}
         <div className="w-full xl:w-2/3 space-y-6">
-          
           {/* CHART CONTAINER */}
           <div className="bg-primary-foreground p-4 rounded-lg">
             <h1 className="text-xl font-semibold">User Activity</h1>
