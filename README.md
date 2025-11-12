@@ -1,20 +1,23 @@
 # Local Development Setup
 
 ## Prerequisites
-- Docker
-- pnpm
-- ngrok (for Stripe webhooks)
 
-## Setup Steps
+* Docker
+* pnpm
+* ngrok (for Stripe webhooks)
 
-### 1. Start PostgreSQL
+---
 
-Start existing container:
+## 1. Start PostgreSQL
+
+**Start existing container:**
+
 ```bash
 docker start postgres-product-db
 ```
 
-Or create new container:
+**Or create a new container:**
+
 ```bash
 docker run -d \
   --name postgres-product-db \
@@ -26,106 +29,133 @@ docker run -d \
   postgres
 ```
 
-Test connection:
+**Test connection:**
+
 ```bash
 psql -h localhost -p 5432 -U admin -d products
 ```
 
-### 2. Prisma Setup
-Initialize Prisma:
+---
 
-Those Prisma commands are one-time setup:
-- `prisma init` - Creates the initial Prisma configuration files
-- `prisma migrate dev --name init` - Creates your database schema for the first time
+## 2. Prisma Setup
 
-You'd only run Prisma commands again if you're:
-- Making changes to your schema → `pnpm prisma migrate dev --name your_change_name`
+Initialize Prisma (one-time setup):
 
 ```bash
 pnpm prisma init --datasource-provider postgresql --output ../generated/prisma
 pnpm prisma migrate dev --name init
 ```
 
-Open Prisma Studio (in product-db directory):
-```bash
-pnpm prisma studio
-```
+**Common Prisma commands:**
 
-### 3. Start Kafka
+* `prisma init` – creates Prisma configuration files
+* `prisma migrate dev --name <name>` – applies schema changes
+* `pnpm prisma studio` – opens Prisma Studio UI
+
+---
+
+## 3. Start Kafka
 
 In the `kafka` directory:
+
 ```bash
 docker compose up
-or
+# or
 docker compose up -d
 ```
 
-This starts Kafka brokers and Kafka UI.
+This starts the Kafka brokers and the Kafka UI.
 
-### 4. Stripe Webhooks
-!! IMPORTANT !! 
-because its a free account, the webhook url changes when starting ngrok
-Start ngrok tunnel:
+---
+
+## 4. Stripe Webhooks
+
+Because this uses a free ngrok account, the webhook URL changes each time ngrok starts.
+
+**Start ngrok tunnel:**
+
 ```bash
 ngrok http 8002
 ```
-Need to copy the url from ngrok output and paste it in the stripe webhooks
-https://dashboard.stripe.com/acct_1SFpkEAcdNBVbpxW/test/workbench/webhooks/we_1SIZNHAcdNBVbpxWuJYd22Q5/events
 
-### 5. node mailer
-might need to update the tokens from 
-cloud console (client id and client secret)
-and from
-https://developers.google.com/oauthplayground (refreshToken)
+Copy the generated ngrok URL and update it in the Stripe webhook configuration:
+[Stripe Webhooks Dashboard](https://dashboard.stripe.com/acct_1SFpkEAcdNBVbpxW/test/workbench/webhooks/we_1SIZNHAcdNBVbpxWuJYd22Q5/events)
 
-### 6. Run Applications
+---
 
-Once Postgres and Kafka are running:
+## 5. Nodemailer Configuration
+
+You may need to refresh tokens for email sending:
+
+* **Client ID / Secret:** from Google Cloud Console
+* **Refresh Token:** from [OAuth Playground](https://developers.google.com/oauthplayground)
+
+---
+
+## 6. Run Applications
+
+Once PostgreSQL and Kafka are running, start all services with TurboRepo:
+
 ```bash
 turbo dev
 ```
 
-### 7. Tech Stack
+---
 
-Turbo - monorepo
+## 7. Tech Stack
 
-Back end server
-express
-hono
-fasitfy
+### Monorepo
 
-DB
-postgres
-mongodb
-cloudinary (images)
+* **TurboRepo** – manages all backend and frontend services in one workspace
 
-utils?
-docker
-prisma
+### Backend
 
-kafka cluster
+* **Frameworks:** Express, Hono, Fastify
+* **Databases:** PostgreSQL, MongoDB
+* **Storage:** Cloudinary (images)
+* **Utilities:** Docker, Prisma
+* **Messaging:** Kafka cluster
 
-Front end
-Next.js TypeScript
-Shadcn
-React query
+### Frontend
 
-auth
-clerk
+* **Framework:** Next.js (TypeScript)
+* **UI Library:** Shadcn
+* **Data Fetching:** React Query
 
-payment
-stripe
+### Authentication
 
-email
-nodemailer
-google cloud console 
+* **Clerk** – user authentication and management
 
---
-create category - postgres
-create product - postgres => kafka => stripe create product
-create user - clerk => kafka => email
+### Payments
 
-stripe webhooks payment =>
-  kafka 
-    => make order - mongo db
-    => email
+* **Stripe** – payment processing and webhooks
+
+### Email
+
+* **Nodemailer** – integrated with **Google Cloud Console** for OAuth credentials
+
+---
+
+## 8. System Flow Overview
+
+**Create Category**
+→ Stored in PostgreSQL
+
+**Create Product**
+→ Stored in PostgreSQL
+→ Kafka event → Stripe product creation
+
+**Create User**
+→ Managed by Clerk
+→ Kafka event → send welcome email
+
+**Stripe Webhook (on successful payment)**
+→ Triggers Kafka event
+→ Creates order in MongoDB
+→ Sends confirmation email
+
+
+
+
+Thank you Lama dev
+https://youtu.be/O9YnPuKC4w4?si=AsMpaLyx3nQ_Iagw
