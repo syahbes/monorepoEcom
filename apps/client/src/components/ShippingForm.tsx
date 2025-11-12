@@ -32,7 +32,6 @@ const ShippingForm = ({ setShippingForm }: { setShippingForm: (data: ShippingFor
           id="name"
           placeholder="John Doe"
           {...register('name')}
-          value={'John Doe'}
         />
         {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
       </div>
@@ -46,7 +45,6 @@ const ShippingForm = ({ setShippingForm }: { setShippingForm: (data: ShippingFor
           id="email"
           placeholder="johndoe@gmail.com"
           {...register('email')}
-          value={'joe@gmail.com'}
         />
         {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
       </div>
@@ -60,7 +58,6 @@ const ShippingForm = ({ setShippingForm }: { setShippingForm: (data: ShippingFor
           id="phone"
           placeholder="123456789"
           {...register('phone')}
-          value={'123456788'}
         />
         {errors.phone && <p className="text-xs text-red-500">{errors.phone.message}</p>}
       </div>
@@ -74,7 +71,6 @@ const ShippingForm = ({ setShippingForm }: { setShippingForm: (data: ShippingFor
           id="address"
           placeholder="123 Main St, Anytown"
           {...register('address')}
-          value={'123 main st.'}
         />
         {errors.address && <p className="text-xs text-red-500">{errors.address.message}</p>}
       </div>
@@ -88,7 +84,6 @@ const ShippingForm = ({ setShippingForm }: { setShippingForm: (data: ShippingFor
           id="city"
           placeholder="New York"
           {...register('city')}
-          value={'New York'}
         />
         {errors.city && <p className="text-xs text-red-500">{errors.city.message}</p>}
       </div>

@@ -63,24 +63,30 @@ docker compose up -d
 This starts Kafka brokers and Kafka UI.
 
 ### 4. Stripe Webhooks
-
+!! IMPORTANT !! 
+because its a free account, the webhook url changes when starting ngrok
 Start ngrok tunnel:
 ```bash
 ngrok http 8002
 ```
-and check the url in the ngrok output
+Need to copy the url from ngrok output and paste it in the stripe webhooks
 https://dashboard.stripe.com/acct_1SFpkEAcdNBVbpxW/test/workbench/webhooks/we_1SIZNHAcdNBVbpxWuJYd22Q5/events
 
-### 5. Run Applications
+### 5. node mailer
+might need to update the tokens from 
+cloud console (client id and client secret)
+and from
+https://developers.google.com/oauthplayground (refreshToken)
+
+### 6. Run Applications
 
 Once Postgres and Kafka are running:
 ```bash
 turbo dev
 ```
 
+### 7. Tech Stack
 
-Tech Stack
-=============
 Turbo - monorepo
 
 Back end server
@@ -109,3 +115,17 @@ clerk
 
 payment
 stripe
+
+email
+nodemailer
+google cloud console 
+
+--
+create category - postgres
+create product - postgres => kafka => stripe create product
+create user - clerk => kafka => email
+
+stripe webhooks payment =>
+  kafka 
+    => make order - mongo db
+    => email
