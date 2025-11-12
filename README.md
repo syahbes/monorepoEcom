@@ -77,3 +77,35 @@ Once Postgres and Kafka are running:
 ```bash
 turbo dev
 ```
+
+
+Tech Stack
+=============
+Turbo - monorepo
+
+Back end server
+express
+hono
+fasitfy
+
+DB
+postgres
+mongodb
+cloudinary (images)
+
+utils?
+docker
+prisma
+
+kafka cluster
+
+Front end
+Next.js TypeScript
+Shadcn
+React query
+
+auth
+clerk
+
+payment
+stripe
